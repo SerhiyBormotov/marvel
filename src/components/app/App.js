@@ -6,8 +6,11 @@ import ComicsList from '../comics-list/ComicsList';
 import Banner from '../banner/Banner';
 import SingleComic from '../single-comic/SingleComic';
 
+
 import './app.scss';
 import visionImg from '../../resources/img/vision.png';
+
+
 
 function App() {
   return (

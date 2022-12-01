@@ -15,9 +15,9 @@ const CharacterList = () => {
         {name: 'Abyss', img: abyssImg, active:false}        
     ]
 
-    let characterListItems = characterListData.map(({name, img, active}) => {
+    let characterListItems = characterListData.map(({name, img, active}, index) => {
         return (
-            <CharecterListItem name={name} img={img} active={active}/>
+            <CharecterListItem name={name} img={img} active={active} key={index}/>
         )
     })
 

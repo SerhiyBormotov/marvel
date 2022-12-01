@@ -21,12 +21,12 @@ const ComicsList = () => {
         )
     })
     return (
-        <div class="comics__list">
-            <ul class="comics__grid">
+        <div className="comics__list">
+            <ul className="comics__grid">
                 {comicsListItems}
             </ul>
-            <button class="button button__main button__long">
-                <div class="inner">load more</div>
+            <button className="button button__main button__long">
+                <div className="inner">load more</div>
             </button>
         </div>
     )

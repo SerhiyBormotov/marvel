@@ -11,9 +11,9 @@ const AsideCharacterInfo = () => {
         "Alpha Flight (1983) #50"
     ]
 
-    let comicsListItems = comicsListData.map(item => {
+    let comicsListItems = comicsListData.map((item, index) => {
         return(
-            <li className="char__comics-item">
+            <li className="char__comics-item" key={index}>
                 {item}
             </li>
         )
