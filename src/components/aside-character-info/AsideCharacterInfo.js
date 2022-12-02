@@ -55,6 +55,7 @@ class AsideCharacterInfo extends Component {
                 this.marvelService.getCharacter(id)
                 .then(this.updateState)
                 .catch(this.onError);
+                this.foo.bar = 0;
             }
         }
 
@@ -91,9 +92,6 @@ const View = ({char}) => {
         classNoImage = "char__no-image";
     }
 
-    if (comics.length > 10) {
-        comics = comics.slice(0, 20);
-    }
     if (comics.length > 0) {
         comicsListItems = comics.map((item, index) => {
             return (
