@@ -36,9 +36,9 @@ class App extends Component {
             <RandomCharacter/>
           </ErrorBoundary>
           <div className="char__content">
-            {/* <ErrorBoundary> */}
+            <ErrorBoundary>
               <CharacterList onCharUpdate={this.onCharUpdate}/>
-            {/* </ErrorBoundary> */}
+            </ErrorBoundary>
             <ErrorBoundary>
               <AsideCharacterInfo activeChar={this.state.activeChar}/>
             </ErrorBoundary>

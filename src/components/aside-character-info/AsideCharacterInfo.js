@@ -1,8 +1,10 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types'
 import Spinner from '../spinner/Spinner';
 import Skeleton from '../skeleton/Skleton';
 import Error from '../error/Error';
 import MarvelService from '../../services/MarvelService';
+
 
 import './aside-character-info.scss';
 
@@ -74,6 +76,10 @@ class AsideCharacterInfo extends Component {
             </div>
         )
     }
+}
+
+AsideCharacterInfo.propTypes = {
+    activeChar: PropTypes.number
 }
 
 const View = ({char}) => {

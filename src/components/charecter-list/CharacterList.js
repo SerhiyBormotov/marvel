@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from "prop-types"
 import CharecterListItem from '../character-list-item/CharacterListItem';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
@@ -101,5 +102,8 @@ class CharacterList extends Component {
     }
 }
 
+CharacterList.propTypes = {
+    onCharUpdate: PropTypes.func.isRequired
+}
 
 export default CharacterList;
