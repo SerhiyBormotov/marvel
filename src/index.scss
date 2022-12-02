@@ -149,6 +149,10 @@ input::-webkit-inner-spin-button {
     &:hover {
         transform: translateY(-5px);
     }
+    &:disabled {
+        opacity: .3;
+        pointer-events: none;
+    }
 }   
 
 

@@ -9,26 +9,45 @@ import './character-list.scss';
 class CharacterList extends Component {
     state = {
         charList: [],
-        loading: true
+        loading: true,
+        error: false,
+        offset: 210,
+        newLoading: false,
+        listEnd: false
     }
 
     marvelService = new MarvelService();
 
     componentDidMount() {
-        this.loadCharList();
+        if (this.didMount) {return} //to protect from executing twice
+        this.didMount = true;
+
+        this.onRequest();      
     }
 
-    loadCharList = () => {
-        this.marvelService.getAllCharacters()
+
+    onRequest = (offset) => {
+        this.onCharListLoading();        
+        this.marvelService.getAllCharacters(offset)
         .then(this.onCharListLoaded)
         .catch(this.onError);
     }
-
-    onCharListLoaded = (charList) => {
+    
+    onCharListLoading = () => {
         this.setState({
-            charList, 
-            loading: false 
+            newLoading:true
         })
+    }
+
+    onCharListLoaded = (newCharList) => {
+
+        this.setState(({offset, charList}) => ({
+                charList: [...charList, ...newCharList], 
+                loading: false,
+                newLoading: false,
+                offset: offset + 9,
+                listEnd: newCharList.length < 9
+            }))
     }
 
     onError = () => {
@@ -39,24 +58,41 @@ class CharacterList extends Component {
     }
 
     render () {
-        let {charList, loading, error} = this.state;
-        let characterListItems = charList.map(({name, thumbnail, id}) => {
-            return (
-                <CharecterListItem name={name} thumbnail={thumbnail} key={id} id= {id} onCharUpdate={this.props.onCharUpdate}/>
+        let {charList, loading, error, offset, newLoading, listEnd} = this.state;
+
+        let loadingMessage = loading ? <Spinner/> : null,
+            errorMessage = error ? <Error/> : null,
+            content = null;
+
+        if (!(loading || error)) {
+            content = (
+                <ul className="char__grid">
+                   { charList.map(({name, thumbnail, id}) => {
+                        return (
+                            <CharecterListItem 
+                            name={name} 
+                            thumbnail={thumbnail} 
+                            key={id} 
+                            id={id} 
+                            onCharUpdate={this.props.onCharUpdate}/>
+                        )
+                    })}
+                </ul>
             )
-        })
-
-
-        if (error) {return  <Error/>;}
-        if (loading) {return <Spinner/>;}
-    
-    
+        }
+        
         return (
             <div className="char__list">
-                <ul className="char__grid">
-                    {characterListItems}
-                </ul>
-                <button className="button button__main button__long">
+                
+                {loadingMessage}
+                {errorMessage}
+                {content}
+                
+                <button 
+                className="button button__main button__long"
+                onClick={() => this.onRequest(offset)}
+                disabled={newLoading}
+                style={{display: listEnd ? "none" : "block"}}>
                     <div className="inner">load more</div>
                 </button>
             </div>
@@ -64,5 +100,6 @@ class CharacterList extends Component {
 
     }
 }
+
 
 export default CharacterList;

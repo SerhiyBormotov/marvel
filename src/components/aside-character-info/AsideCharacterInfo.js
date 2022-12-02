@@ -55,7 +55,6 @@ class AsideCharacterInfo extends Component {
                 this.marvelService.getCharacter(id)
                 .then(this.updateState)
                 .catch(this.onError);
-                this.foo.bar = 0;
             }
         }
 

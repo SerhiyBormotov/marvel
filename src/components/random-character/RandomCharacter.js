@@ -17,8 +17,11 @@ class RandomCharacter extends Component {
     }
 
     componentDidMount() {
+        if (this.didMount) {return} //to protect from executing twice
+        this.didMount = true;
         this.charUpdate();
     }
+
 
     marvelService = new MarvelService();
 
@@ -41,7 +44,6 @@ class RandomCharacter extends Component {
             loading: false,
             error: true
         });
-
     }
 
     charUpdate = () => {
