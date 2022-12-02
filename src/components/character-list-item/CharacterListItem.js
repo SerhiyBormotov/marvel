@@ -1,11 +1,12 @@
 import './character-list-item.scss';
 
 const CharecterListItem = (props) => {
-    const {img, name, active} = props;
-    const activeClass = ' char__item_selected';
+    const {thumbnail, name, id, onCharUpdate} = props;
     return(
-    <li className={`char__item${active?activeClass:""}`}>
-        <img src={img} alt={name}/>
+    <li 
+    className="char__item"
+    onClick={(e) => onCharUpdate(e.currentTarget, id)}>
+        <img src={thumbnail} alt={name}/>
         <div className="char__name">{name}</div>
     </li>
     )

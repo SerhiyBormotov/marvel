@@ -1,57 +1,133 @@
+import { Component } from 'react';
+import Spinner from '../spinner/Spinner';
+import Skeleton from '../skeleton/Skleton';
+import Error from '../error/Error';
+import MarvelService from '../../services/MarvelService';
+
 import './aside-character-info.scss';
-import thorImg from '../../resources/img/thor.jpeg';
 
-const AsideCharacterInfo = () => {
 
-    const comicsListData = [
-        "Alpha Flight (1983) #50",
-        "Alpha Flight (1983) #50",
-        "Alpha Flight (1983) #50",
-        "Alpha Flight (1983) #50",
-        "Alpha Flight (1983) #50"
-    ]
+class AsideCharacterInfo extends Component {
+    state = {
+        char: null,
+        loading: false,
+        error: false
+    }
 
-    let comicsListItems = comicsListData.map((item, index) => {
+    componentDidMount() {
+        this.charUpdate();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.activeChar !== this.props.activeChar) {
+            this.charUpdate();
+        }
+    }
+
+    marvelService = new MarvelService();
+
+    updateState = (char) => {
+        this.setState({
+            char, 
+            loading: false
+        });
+
+    }
+
+    onLoading = () => {
+        this.setState({
+            loading: true
+        });
+    }
+
+    onError = () => {
+        this.setState({
+            loading: false,
+            error: true
+        });
+
+    }
+
+    charUpdate = () => {
+        let id = this.props.activeChar;
+            if (id) {
+                this.onLoading();
+                this.marvelService.getCharacter(id)
+                .then(this.updateState)
+                .catch(this.onError);
+            }
+        }
+
+    render() {
+        let {char, error, loading} = this.state;
+
+        let errorMessage = error ? <Error/> : null,
+            loadingMessage = loading ? <Spinner/> : null,
+            skeleton = !(error || loading || char) ? <Skeleton/> : null,
+            content = !(error || loading || !char) ? <View char={char}/> : null;
         return(
-            <li className="char__comics-item" key={index}>
-                {item}
-            </li>
+            <div className="char__info">
+                {errorMessage}
+                {skeleton}
+                {loadingMessage}
+                {content}        
+            </div>
         )
-    })
-    return(
-        <div className="char__info">
+    }
+}
+
+const View = ({char}) => {
+    let {thumbnail, name, description, homepage, wiki, comics} = char;
+    let classNoImage = "",
+     comicsListItems = "No comics with the Character was found";
+
+    if (!description) {
+        description = "No description of the Character";
+    } else if (description.length > 500) {
+        description = description.slice(0, 500) + '...';
+    }
+
+    if (thumbnail.indexOf('image_not_available') >= 0) {
+        classNoImage = "char__no-image";
+    }
+
+    if (comics.length > 10) {
+        comics = comics.slice(0, 20);
+    }
+    if (comics.length > 0) {
+        comicsListItems = comics.map((item, index) => {
+            return (
+                <li className="char__comics-item" key={index}>
+                    {item.name}
+                </li>
+            )
+        })
+    }   
+
+    return (
+        <>
         <div className="char__basics">
-            <img src={thorImg} alt="abyss"/>
+            <img src={thumbnail} alt={name} className={classNoImage}/>
             <div>
-                <div className="char__info-name">thor</div>
+                <div className="char__info-name">{name}</div>
                 <div className="char__btns">
-                    <a href="#" className="button button__main">
+                    <a href={homepage} className="button button__main">
                         <div className="inner">homepage</div>
                     </a>
-                    <a href="#" className="button button__secondary">
+                    <a href={wiki} className="button button__secondary">
                         <div className="inner">Wiki</div>
                     </a>
                 </div>
             </div>
         </div>
         <div className="char__descr">
-            In Norse mythology, Loki is a god or jötunn (or both). Loki is the son of Fárbauti and Laufey, and the brother of Helblindi and Býleistr. By the jötunn Angrboða, Loki is the father of Hel, the wolf Fenrir, and the world serpent Jörmungandr. By Sigyn, Loki is the father of Nari and/or Narfi and with the stallion Svaðilfari as the father, Loki gave birth—in the form of a mare—to the eight-legged horse Sleipnir. In addition, Loki is referred to as the father of Váli in the Prose Edda.
+            {description}
         </div>
         <div className="char__comics">Comics:</div>
         <ul className="char__comics-list">
             {comicsListItems}
         </ul>
-        <p className="char__select">Please select a character to see information</p>
-        <div className="skeleton">
-            <div className="pulse skeleton__header">
-                <div className="pulse skeleton__circle"></div>
-                <div className="pulse skeleton__mini"></div>
-            </div>
-            <div className="pulse skeleton__block"></div>
-            <div className="pulse skeleton__block"></div>
-            <div className="pulse skeleton__block"></div>
-        </div>
-    </div>
+        </>        
     )
 }
 
