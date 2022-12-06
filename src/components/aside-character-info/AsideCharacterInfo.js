@@ -1,19 +1,11 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types'
-import Spinner from '../spinner/Spinner';
 import Skeleton from '../skeleton/Skleton';
-import Error from '../error/Error';
-import MarvelService from '../../services/MarvelService';
-
 
 import './aside-character-info.scss';
 
-
 class AsideCharacterInfo extends Component {
     state = {
-        char: null,
-        loading: false,
-        error: false
+        char: null
     }
 
     componentDidMount() {
@@ -21,66 +13,35 @@ class AsideCharacterInfo extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.activeChar !== this.props.activeChar) {
+        if (!prevProps.activeChar || (prevProps.activeChar.id !== this.props.activeChar.id)) {
             this.charUpdate();
         }
     }
 
-    marvelService = new MarvelService();
-
-    updateState = (char) => {
-        this.setState({
-            char, 
-            loading: false
-        });
-
-    }
-
-    onLoading = () => {
-        this.setState({
-            loading: true
-        });
-    }
-
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true
-        });
-
-    }
-
     charUpdate = () => {
-        let id = this.props.activeChar;
-            if (id) {
-                this.onLoading();
-                this.marvelService.getCharacter(id)
-                .then(this.updateState)
-                .catch(this.onError);
+        const char = this.props.activeChar
+            if (char) {
+                this.setState({
+                    char
+                });
             }
         }
 
     render() {
-        let {char, error, loading} = this.state;
+        let {char} = this.state;
 
-        let errorMessage = error ? <Error/> : null,
-            loadingMessage = loading ? <Spinner/> : null,
-            skeleton = !(error || loading || char) ? <Skeleton/> : null,
-            content = !(error || loading || !char) ? <View char={char}/> : null;
+        let skeleton = !(char) ? <Skeleton/> : null,
+            content = char ? <View char={char}/> : null;
         return(
             <div className="char__info">
-                {errorMessage}
                 {skeleton}
-                {loadingMessage}
                 {content}        
             </div>
         )
     }
 }
 
-AsideCharacterInfo.propTypes = {
-    activeChar: PropTypes.number
-}
+
 
 const View = ({char}) => {
     let {thumbnail, name, description, homepage, wiki, comics} = char;

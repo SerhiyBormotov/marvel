@@ -1,6 +1,5 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from "prop-types"
-import CharecterListItem from '../character-list-item/CharacterListItem';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
 import MarvelService from '../../services/MarvelService';
@@ -16,6 +15,8 @@ class CharacterList extends Component {
         newLoading: false,
         listEnd: false
     }
+
+   itemRef = React.createRef();
 
     marvelService = new MarvelService();
 
@@ -58,6 +59,13 @@ class CharacterList extends Component {
         })
     }
 
+    onCharClick = (elem, char) => {
+        const activeClass = 'char__item_selected';
+        document.querySelectorAll(`.${activeClass}`).forEach(item => item.classList.remove(activeClass));    
+        elem.classList.toggle(activeClass);
+        this.props.onCharUpdate(char);
+    }
+
     render () {
         let {charList, loading, error, offset, newLoading, listEnd} = this.state;
 
@@ -68,14 +76,13 @@ class CharacterList extends Component {
         if (!(loading || error)) {
             content = (
                 <ul className="char__grid">
-                   { charList.map(({name, thumbnail, id}) => {
+                   { charList.map((char) => {
                         return (
                             <CharecterListItem 
-                            name={name} 
-                            thumbnail={thumbnail} 
-                            key={id} 
-                            id={id} 
-                            onCharUpdate={this.props.onCharUpdate}/>
+                            char={char}
+                            key={char.id} 
+                            onCharClick={this.onCharClick}
+                            />
                         )
                     })}
                 </ul>
@@ -99,6 +106,25 @@ class CharacterList extends Component {
             </div>
         )
 
+    }
+}
+
+class CharecterListItem extends Component {
+    componentWillUnmount(){
+        console.log('unmount');
+    }
+
+    render() {
+        const {char, onCharClick} = this.props;
+        return(
+            <li 
+            className="char__item"
+            onFocus={(e) => onCharClick(e.currentTarget, char)}
+            tabIndex = {0}>
+                <img src={char.thumbnail} alt={char.name}/>
+                <div className="char__name">{char.name}</div>
+            </li>        
+        )
     }
 }
 

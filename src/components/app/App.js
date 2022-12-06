@@ -16,15 +16,11 @@ class App extends Component {
     activeChar: null
   }
 
-  onCharUpdate = (elem, id) => {
-    const activeClass = 'char__item_selected';
+  onCharUpdate = (char) => {   
     this.setState({
-      activeChar: id
+      activeChar: char
     })
 
-    document.querySelectorAll(`.${activeClass}`).forEach(item => item.classList.remove(activeClass));
-
-    elem.classList.toggle(activeClass);
   }
 
   render() {
