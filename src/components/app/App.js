@@ -12,17 +12,17 @@ import './app.scss';
 import visionImg from '../../resources/img/vision.png';
 
 const App = () => {
-  const [activeChar, setActiveChar] = useState(null); 
+  // const [activeChar, setActiveChar] = useState(null); 
 
-  const onCharUpdate = (char) => {   
-    setActiveChar(char);
-  }
+  // const onCharUpdate = (char) => {   
+  //   setActiveChar(char);
+  // }
 
   return (
     <div className="app">
       <Header/>
       <main>
-        <ErrorBoundary>
+        {/* <ErrorBoundary>
           <RandomCharacter/>
         </ErrorBoundary>
         <div className="char__content">
@@ -31,12 +31,12 @@ const App = () => {
           </ErrorBoundary>
           <ErrorBoundary>
             <AsideCharacterInfo activeChar={activeChar}/>
-          </ErrorBoundary>
-        </div>
-        <img className="bg-decoration" src={visionImg} alt="vision"></img>
-        {/* <Banner/>
+          </ErrorBoundary> */}
+        {/* </div> */}
+        <Banner/>
         <ComicsList/>
-        <SingleComic/> */}
+      {/* <SingleComic/> */}
+      <img className="bg-decoration" src={visionImg} alt="vision"></img>
       </main>
     </div>
   );

@@ -1,31 +1,65 @@
+import { useState, useEffect, useRef } from 'react';
+import useMarvelService from '../../services/MarvelService';
+import Spinner from '../spinner/Spinner';
+import Error from '../error/Error';
+
 import './comics-list.scss';
-import ComicsListItem from '../comics-list-item/ComicsListItem';
-import xmenImg from '../../resources/img/x-men.png';
 
 const ComicsList = () => {
+    const [comicsList, setComicsList] = useState([]),
+          [offset, setOffset] = useState(20),
+          [listEnd, setListEnd] = useState(false);
 
-    const comicsListData = [
-        {name: 'ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB', price: 9.99, img: xmenImg, href: "#"},
-        {name: 'ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB', price: "", img: xmenImg, href: "#"},
-        {name: 'ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB', price: 9.99, img: xmenImg, href: "#"},
-        {name: 'ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB', price: 9.99, img: xmenImg, href: "#"},
-        {name: 'ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB', price: 9.99, img: xmenImg, href: "#"},
-        {name: 'ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB', price: 9.99, img: xmenImg, href: "#"},
-        {name: 'ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB', price: 9.99, img: xmenImg, href: "#"},
-        {name: 'ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB', price: 9.99, img: xmenImg, href: "#"}
-    ]
+    const {loading, error, getAllComics} = useMarvelService();
 
-    const comicsListItems = comicsListData.map((item) => {
-        return (
-            <ComicsListItem {...item}/>
-        )
-    })
+    const onComicsListLoaded = (newComicsList) => {
+        setComicsList([...comicsList, ...newComicsList]);
+        setOffset(offset => offset + 8);
+        setListEnd(newComicsList.length < 8);
+    }
+
+    const onRequest = (offset) => {
+        getAllComics(offset)
+        .then(onComicsListLoaded);
+    }
+
+    let didMount = useRef(false);
+    useEffect(() => {
+        if (didMount.current) {return} //to protect from executing twice
+        didMount.current = true;
+        onRequest();
+    }, []);
+
+    let loadingMessage = (loading && (comicsList.length === 0)) ? <Spinner/> : null,   //Check if Char List is empty
+        errorMessage = error ? <Error/> : null;
+
+    
     return (
         <div className="comics__list">
+            {loadingMessage}
+            {errorMessage}
             <ul className="comics__grid">
-                {comicsListItems}
+                
+                {
+                    comicsList.map(({name, thumbnail, price, homepage, id}, index) => {
+                        return (
+                            <li className="comics__item"
+                            key = {index}>
+                                <a href={homepage}>
+                                    <img src={thumbnail} alt={name} className="comics__item-img"/>
+                                    <div className="comics__item-name">{name}</div>
+                                    <div className="comics__item-price">{price?`${price}$`:"NOT AVAILABLE"}</div>
+                                </a>
+                            </li>
+                        )
+                    })
+                }
             </ul>
-            <button className="button button__main button__long">
+            <button 
+            className="button button__main button__long"
+            onClick={() => onRequest(offset)}
+            disabled={loading}
+            style={{display: listEnd ? "none" : "block"}}>
                 <div className="inner">load more</div>
             </button>
         </div>
