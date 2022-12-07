@@ -1,47 +1,22 @@
-import { Component } from 'react';
+import PropTypes from 'prop-types';
 import Skeleton from '../skeleton/Skleton';
 
 import './aside-character-info.scss';
 
-class AsideCharacterInfo extends Component {
-    state = {
-        char: null
-    }
+const AsideCharacterInfo = (props) => {
+    const char = props.activeChar;
 
-    componentDidMount() {
-        this.charUpdate();
-    }
+    let skeleton = !(char) ? <Skeleton/> : null,
+        content = char ? <View char={char}/> : null;
 
-    componentDidUpdate(prevProps) {
-        if (!prevProps.activeChar || (prevProps.activeChar.id !== this.props.activeChar.id)) {
-            this.charUpdate();
-        }
-    }
-
-    charUpdate = () => {
-        const char = this.props.activeChar
-            if (char) {
-                this.setState({
-                    char
-                });
-            }
-        }
-
-    render() {
-        let {char} = this.state;
-
-        let skeleton = !(char) ? <Skeleton/> : null,
-            content = char ? <View char={char}/> : null;
-        return(
-            <div className="char__info">
-                {skeleton}
-                {content}        
-            </div>
-        )
-    }
+    return(
+        <div className="char__info">
+            {skeleton}
+            {content}        
+        </div>
+    )
+    
 }
-
-
 
 const View = ({char}) => {
     let {thumbnail, name, description, homepage, wiki, comics} = char;
@@ -70,29 +45,41 @@ const View = ({char}) => {
 
     return (
         <>
-        <div className="char__basics">
-            <img src={thumbnail} alt={name} className={classNoImage}/>
-            <div>
-                <div className="char__info-name">{name}</div>
-                <div className="char__btns">
-                    <a href={homepage} className="button button__main">
-                        <div className="inner">homepage</div>
-                    </a>
-                    <a href={wiki} className="button button__secondary">
-                        <div className="inner">Wiki</div>
-                    </a>
+            <div className="char__basics">
+                <img src={thumbnail} alt={name} className={classNoImage}/>
+                <div>
+                    <div className="char__info-name">{name}</div>
+                    <div className="char__btns">
+                        <a href={homepage} className="button button__main">
+                            <div className="inner">homepage</div>
+                        </a>
+                        <a href={wiki} className="button button__secondary">
+                            <div className="inner">Wiki</div>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div className="char__descr">
-            {description}
-        </div>
-        <div className="char__comics">Comics:</div>
-        <ul className="char__comics-list">
-            {comicsListItems}
-        </ul>
+            <div className="char__descr">
+                {description}
+            </div>
+            <div className="char__comics">Comics:</div>
+            <ul className="char__comics-list">
+                {comicsListItems}
+            </ul>
         </>        
     )
+}
+
+AsideCharacterInfo.propTypes = {
+    activeChar: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        description: PropTypes.string,
+        id: PropTypes.string.isRequired,
+        thumbnail:  PropTypes.string,
+        homepage:  PropTypes.string,
+        wiki:  PropTypes.string,
+        comics: PropTypes.array
+    })
 }
 
 export default AsideCharacterInfo;

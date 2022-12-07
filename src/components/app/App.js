@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import Header from '../header/Header';
 import RandomCharacter from '../random-character/RandomCharacter';
 import CharacterList from '../charecter-list/CharacterList';
@@ -11,42 +11,35 @@ import ErrorBoundary from '../error-boundary/ErrorBoundary';
 import './app.scss';
 import visionImg from '../../resources/img/vision.png';
 
-class App extends Component {
-  state = {
-    activeChar: null
+const App = () => {
+  const [activeChar, setActiveChar] = useState(null); 
+
+  const onCharUpdate = (char) => {   
+    setActiveChar(char);
   }
 
-  onCharUpdate = (char) => {   
-    this.setState({
-      activeChar: char
-    })
-
-  }
-
-  render() {
-    return (
-      <div className="app">
-        <Header/>
-        <main>
+  return (
+    <div className="app">
+      <Header/>
+      <main>
+        <ErrorBoundary>
+          <RandomCharacter/>
+        </ErrorBoundary>
+        <div className="char__content">
           <ErrorBoundary>
-            <RandomCharacter/>
+            <CharacterList onCharUpdate={onCharUpdate}/>
           </ErrorBoundary>
-          <div className="char__content">
-            <ErrorBoundary>
-              <CharacterList onCharUpdate={this.onCharUpdate}/>
-            </ErrorBoundary>
-            <ErrorBoundary>
-              <AsideCharacterInfo activeChar={this.state.activeChar}/>
-            </ErrorBoundary>
-          </div>
-          <img className="bg-decoration" src={visionImg} alt="vision"></img>
-          {/* <Banner/>
-          <ComicsList/>
-          <SingleComic/> */}
-        </main>
-      </div>
-    );
-  }
+          <ErrorBoundary>
+            <AsideCharacterInfo activeChar={activeChar}/>
+          </ErrorBoundary>
+        </div>
+        <img className="bg-decoration" src={visionImg} alt="vision"></img>
+        {/* <Banner/>
+        <ComicsList/>
+        <SingleComic/> */}
+      </main>
+    </div>
+  );
 }
 
 export default App;

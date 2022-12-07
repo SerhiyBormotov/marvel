@@ -1,27 +1,25 @@
-class MarvelService {
-    _apiBase = "https://gateway.marvel.com:443/v1/public/";
-    _apiKey =  "apikey=5598dfc923fad00d435cc55bf7bf3e8d";
-    _baseOffset = 210;
+import { useHttp } from "../hooks/http.hook";
 
-    getData = async (url) => {
-        const result = await fetch(url);
-        if (!result.ok) {
-            throw new Error(`Could not fetch with ${url}. Status: ${result.status} `);
-        }
-        return await result.json();
-    }
+const useMarvelService = () => {
+    const _apiBase = "https://gateway.marvel.com:443/v1/public/",
+          _apiKey =  "apikey=5598dfc923fad00d435cc55bf7bf3e8d",
+          _baseOffset = 210;
 
-    getAllCharacters = async (offset = this._baseOffset) => {
-        const res = await this.getData(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`);
-        return res.data.results.map(this._transformCharacter);
+    const {loading, error, request, clearError} = useHttp();
+
+    const getAllCharacters = async (offset = _baseOffset) => {
+        console.log("getAll");
+        const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
+        return res.data.results.map(_transformCharacter);
        
     }
-    getCharacter = async (id) => {
-        const res = await this.getData(`${this._apiBase}characters/${id}?${this._apiKey}`);
-        return this._transformCharacter(res.data.results[0]);        
+    const getCharacter = async (id) => {
+        const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
+        console.log("getId");
+        return _transformCharacter(res.data.results[0]);        
     }
 
-    _transformCharacter = (char) => {
+    const _transformCharacter = (char) => {
         return {
             id: char.id,
             name: char.name,
@@ -32,6 +30,8 @@ class MarvelService {
             comics: char.comics.items
         }
     }
+
+    return {loading, error, getAllCharacters, getCharacter, clearError}
 }
 
-export default MarvelService;
+export default useMarvelService;
