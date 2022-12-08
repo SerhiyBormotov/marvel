@@ -1,0 +1,28 @@
+@import '../../../variables.scss';
+.error-page{    
+    text-align: center;
+    margin: 40px auto;
+    width: 100%;
+    max-width: 800px;
+
+    &__title{
+        font-size: 20px;
+    }
+
+    &__number{
+        color: $main-color;
+        font-size: 48px;
+    }
+
+    &__link{
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.3s color ease;
+        margin-top:20px;
+        cursor: pointer;
+        &:hover{
+            color: $main-color;
+        }
+    }
+}
+

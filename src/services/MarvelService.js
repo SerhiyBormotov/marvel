@@ -9,19 +9,24 @@ const useMarvelService = () => {
     const {loading, error, request, clearError} = useHttp();
 
     const getAllCharacters = async (offset = _baseCharOffset) => {
-        console.log("getAll");
+      //  console.log("getAll");
         const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
         return res.data.results.map(_transformCharacter);
        
     }
     const getAllComics = async (offset = _baseComicsOffset) => {
-        console.log("getAllComics");
+       // console.log("getAllComics");
         const res = await request(`${_apiBase}comics?noVariants=true&limit=8&offset=${offset}&${_apiKey}`);
         return res.data.results.map(_transformComic);       
     }
+    const getComic = async (id) => {
+       // console.log("getComic");
+        const res = await request(`${_apiBase}comics/${id}?${_apiKey}`);
+        return _transformComic(res.data.results[0]);       
+    }
     const getCharacter = async (id) => {
         const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
-        console.log("getId");
+       // console.log("getId");
         return _transformCharacter(res.data.results[0]);        
     }
 
@@ -30,7 +35,7 @@ const useMarvelService = () => {
             id: char.id,
             name: char.name,
             thumbnail: char.thumbnail.path + "." + char.thumbnail.extension,
-            description: char.description,
+            description: char.description || 'There is no description for the Character',
             homepage: char.urls[0].url,
             wiki: char.urls[1].url,
             comics: char.comics.items
@@ -42,13 +47,13 @@ const useMarvelService = () => {
             id: comic.id,
             name: comic.title,
             thumbnail: comic.thumbnail.path + "." + comic.thumbnail.extension,
-            description: comic.description,
-            homepage: comic.urls[0].url,
-            price: comic.prices[0].price
+            description: comic.description || 'There is no description for the Comic',
+            pageCount: comic.pageCount || 0,
+            price: comic.prices[0].price ? (comic.prices[0].price + '$') : ("Not available")
         }
     }
 
-    return {loading, error, getAllCharacters, getCharacter, getAllComics, clearError}
+    return {loading, error, getAllCharacters, getCharacter, getAllComics, getComic, clearError}
 }
 
 export default useMarvelService;

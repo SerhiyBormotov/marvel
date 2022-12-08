@@ -26,15 +26,12 @@ const RandomCharacter = () => {
         charUpdate();
     }, []);
     
-    let errorMessage = error ? <Error/> : null,
-        loadingMessage = loading ? <Spinner/> : null,
-        content = (char) ? <View char={char}/> : null;
-
+    let content = !(!char || loading || error) ? <View char={char}/> : null;
 
     return (        
         <div className="randomchar">
-            {loadingMessage}
-            {errorMessage}
+            {loading && <Spinner/>}
+            {error && <Error/>}
             {content} 
             <div className="randomchar__static">
                 <p className="randomchar__title">
@@ -60,13 +57,11 @@ const View = ({char}) => {
     let {name, thumbnail, description, homepage, wiki} = char;
     let classNoImage = '';
 
-    if (!description) {
-        description = "No description of the Character"
-    } else if (description.length > 200) {
+    if (description.length > 200) {
         description = description.slice(0, 200) + '...';
     }
 
-    if (thumbnail.indexOf('image_not_available') >= 0) {
+    if (thumbnail.indexOf('image_not_available') >= 0) {    
         classNoImage = "randomchar__img_no-image";
     }
 

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import Skeleton from '../skeleton/Skleton';
 
 import './aside-character-info.scss';
@@ -6,13 +7,9 @@ import './aside-character-info.scss';
 const AsideCharacterInfo = (props) => {
     const char = props.activeChar;
 
-    let skeleton = !(char) ? <Skeleton/> : null,
-        content = char ? <View char={char}/> : null;
-
     return(
         <div className="char__info">
-            {skeleton}
-            {content}        
+            {char ? <View char={char}/> : <Skeleton/>}        
         </div>
     )
     
@@ -23,9 +20,7 @@ const View = ({char}) => {
     let classNoImage = "",
      comicsListItems = "No comics with the Character was found";
 
-    if (!description) {
-        description = "No description of the Character";
-    } else if (description.length > 500) {
+   if (description.length > 500) {
         description = description.slice(0, 500) + '...';
     }
 
@@ -35,9 +30,10 @@ const View = ({char}) => {
 
     if (comics.length > 0) {
         comicsListItems = comics.map((item, index) => {
+            const id = item.resourceURI.match(/\/\d+$/)[0].slice(1);
             return (
                 <li className="char__comics-item" key={index}>
-                    {item.name}
+                    <Link to={'/comics/' + id}>{item.name}</Link>
                 </li>
             )
         })
@@ -81,5 +77,6 @@ AsideCharacterInfo.propTypes = {
         comics: PropTypes.array
     })
 }
+
 
 export default AsideCharacterInfo;

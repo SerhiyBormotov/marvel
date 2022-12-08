@@ -38,14 +38,14 @@ const ComicsList = () => {
             <ul className="comics__grid">
                 
                 {
-                    comicsList.map(({name, thumbnail, price, homepage, id}, index) => {
+                    comicsList.map(({name, thumbnail, price,  id}, index) => {
                         return (
                             <li className="comics__item"
                             key = {index}>
-                                <a href={homepage}>
+                                <a href={"/comics/" + id}>
                                     <img src={thumbnail} alt={name} className="comics__item-img"/>
                                     <div className="comics__item-name">{name}</div>
-                                    <div className="comics__item-price">{price?`${price}$`:"NOT AVAILABLE"}</div>
+                                    <div className="comics__item-price">{price}</div>
                                 </a>
                             </li>
                         )
