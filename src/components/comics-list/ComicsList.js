@@ -30,14 +30,11 @@ const ComicsList = () => {
         onRequest();
     }, []);
 
-    let loadingMessage = (loading && (comicsList.length === 0)) ? <Spinner/> : null,   //Check if Char List is empty
-        errorMessage = error ? <Error/> : null;
-
-    
     return (
         <div className="comics__list">
-            {loadingMessage}
-            {errorMessage}
+            {/* Check if Char List is empty */}
+            {(loading && (comicsList.length === 0)) && <Spinner/> }  
+            {error && <Error/>}
             <ul className="comics__grid">
                 
                 {
