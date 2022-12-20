@@ -1,16 +1,32 @@
 import PropTypes from 'prop-types';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Skeleton from '../skeleton/Skleton';
+import { CSSTransition, SwitchTransition } from 'react-transition-group';
 
 import './aside-character-info.scss';
 
 const AsideCharacterInfo = (props) => {
     const char = props.activeChar;
+    const refnode=useRef(null);
 
     return(
-        <div className="char__info">
-            {char ? <View char={char}/> : <Skeleton/>}        
-        </div>
+        <>
+        <SwitchTransition>
+            <CSSTransition 
+                key = {char ? char.id : "init"} 
+                classNames="fade-in" 
+                timeout={200} 
+                nodeRef={refnode} 
+                mountOnEnter 
+                unmountOnExit 
+                >
+                <div className="char__info" ref={refnode}>
+                    {char ? <View char={char}/> : <Skeleton/>}       
+                </div>
+            </CSSTransition>
+        </SwitchTransition>    
+        </>
     )
     
 }
@@ -70,7 +86,7 @@ AsideCharacterInfo.propTypes = {
     activeChar: PropTypes.shape({
         name: PropTypes.string.isRequired,
         description: PropTypes.string,
-        id: PropTypes.string.isRequired,
+        id: PropTypes.number.isRequired,
         thumbnail:  PropTypes.string,
         homepage:  PropTypes.string,
         wiki:  PropTypes.string,

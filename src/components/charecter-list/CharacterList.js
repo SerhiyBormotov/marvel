@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef} from 'react';
+import { useState, useEffect, useRef, createRef} from 'react';
 import PropTypes from "prop-types";
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
 import useMarvelService from '../../services/MarvelService';
 import './character-list.scss';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+
 
 
 const CharacterList = (props) => {
@@ -25,12 +27,12 @@ const CharacterList = (props) => {
         .then(onCharListLoaded);
     }
 
-    let refArr = useRef([]);
+    const refArr = [];
 
     const onCharClick = (i, char) => {
         const activeClass = 'char__item_selected';
-        refArr.current.forEach(item => item.classList.remove(activeClass))
-        refArr.current[i].classList.add(activeClass);
+        refArr.forEach(item => item.current.classList.remove(activeClass))
+        refArr[i].current.classList.add(activeClass);
         props.onCharUpdate(char);
     }
 
@@ -39,8 +41,7 @@ const CharacterList = (props) => {
         if (didMount.current) {return} //to protect from executing twice
         didMount.current = true;
         onRequest();
-    }, []);
-    
+    }, []);    
     
     let loadingMessage = (loading && (charList.length === 0)) ? <Spinner/> : null,   //Check if Char List is empty
         errorMessage = error ? <Error/> : null;
@@ -50,27 +51,30 @@ const CharacterList = (props) => {
             
             {loadingMessage}
             {errorMessage}
-            <ul className="char__grid">
+            <TransitionGroup className="char__grid" component={'ul'}>
                 { charList.map((char, i) => {
+                    refArr[i]=createRef();
                     return (
-                        <li 
-                        className="char__item"
-                        onFocus={() => onCharClick(i, char)}
-                        onClick={e => e.currentTarget.focus()}
-                        tabIndex = {0}
-                        key={char.id}
-                        ref={el => refArr.current[i] = el}>
-                            <img src={char.thumbnail} alt={char.name}/>
-                            <div className="char__name">{char.name}</div>
-                        </li>  
+                        <CSSTransition classNames={"roll-in"} nodeRef={refArr[i]} timeout={500} key={char.id}>
+                            <li 
+                            className="char__item"
+                            onFocus={() => onCharClick(i, char)}
+                            onClick={e => e.currentTarget.focus()}
+                            tabIndex = {0}
+                            key={char.id}
+                            ref={refArr[i]}>
+                                <img src={char.thumbnail} alt={char.name}/>
+                                <div className="char__name">{char.name}</div>
+                            </li>
+                        </CSSTransition>  
                     )
                 })}
-            </ul>
+            </TransitionGroup>
             
             <button 
             className="button button__main button__long"
             onClick={() => onRequest(offset)}
-            disabled={loading}
+            disabled={loading || error}
             style={{display: listEnd ? "none" : "block"}}>
                 <div className="inner">load more</div>
             </button>

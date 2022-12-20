@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Component } from 'react';
+import { CSSTransition } from 'react-transition-group';
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
@@ -25,14 +26,27 @@ const RandomCharacter = () => {
         didMount.current = true;
         charUpdate();
     }, []);
-    
-    let content = !(!char || loading || error) ? <View char={char}/> : null;
+    const showContent = !(!char || loading || error);
+    const refnode=useRef(null);
 
     return (        
         <div className="randomchar">
             {loading && <Spinner/>}
             {error && <Error/>}
-            {content} 
+
+            <CSSTransition 
+            classNames="fade-in" 
+            timeout={500} 
+            nodeRef={refnode} 
+            in={showContent} 
+            mountOnEnter 
+            unmountOnExit 
+            exit={false}>
+                <div className="randomchar__block" ref={el => refnode.current = el}>
+                    <View char={char}/>
+                </div>
+            </CSSTransition> 
+
             <div className="randomchar__static">
                 <p className="randomchar__title">
                     Random character for today!<br/>
@@ -52,38 +66,41 @@ const RandomCharacter = () => {
     )
 }
 
-const View = ({char}) => {
+class View extends Component {
+    render() {
+        let {name, thumbnail, description, homepage, wiki} = this.props.char;
+        let classNoImage = '';
+        if (description.length > 180) {
+            description = description.slice(0, 100) + '...';
+        }
 
-    let {name, thumbnail, description, homepage, wiki} = char;
-    let classNoImage = '';
+        if (thumbnail.indexOf('image_not_available') >= 0) {    
+            classNoImage = "randomchar__img_no-image";
+        }
 
-    if (description.length > 200) {
-        description = description.slice(0, 200) + '...';
-    }
-
-    if (thumbnail.indexOf('image_not_available') >= 0) {    
-        classNoImage = "randomchar__img_no-image";
-    }
-
-    return (
-        <div className="randomchar__block">
-            <img src={thumbnail} alt={name} className={"randomchar__img " + classNoImage}/>
-            <div className="randomchar__info">
-                <p className="randomchar__name">{name}</p>
-                <p className="randomchar__descr">
-                    {description}
-                </p>
-                <div className="randomchar__btns">
-                    <a href={homepage} className="button button__main">
-                        <div className="inner">homepage</div>
-                    </a>
-                    <a href={wiki} className="button button__secondary">
-                        <div className="inner">Wiki</div>
-                    </a>
+        return (
+            <>
+                <img src={thumbnail} alt={name} className={"randomchar__img " + classNoImage} />
+                <div className="randomchar__info" >
+                    <p className="randomchar__name">{name}</p>
+                    <p className="randomchar__descr">
+                        {description}
+                    </p>
+                    <div className="randomchar__btns">
+                        <a href={homepage} className="button button__main">
+                            <div className="inner">homepage</div>
+                        </a>
+                        <a href={wiki} className="button button__secondary">
+                            <div className="inner">Wiki</div>
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </div>
-    )
+            </>
+            )
+    }
+
+
+    
 }
 
 export default RandomCharacter;

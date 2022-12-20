@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, createRef } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
@@ -11,6 +12,8 @@ const ComicsList = () => {
           [listEnd, setListEnd] = useState(false);
 
     const {loading, error, getAllComics} = useMarvelService();
+
+    const refArr = [];
 
     const onComicsListLoaded = (newComicsList) => {
         setComicsList([...comicsList, ...newComicsList]);
@@ -35,23 +38,26 @@ const ComicsList = () => {
             {/* Check if Char List is empty */}
             {(loading && (comicsList.length === 0)) && <Spinner/> }  
             {error && <Error/>}
-            <ul className="comics__grid">
-                
+            <TransitionGroup className="comics__grid" component={'ul'}>                
                 {
                     comicsList.map(({name, thumbnail, price,  id}, index) => {
+                        refArr[index] = createRef();
                         return (
-                            <li className="comics__item"
-                            key = {index}>
-                                <a href={"/comics/" + id}>
-                                    <img src={thumbnail} alt={name} className="comics__item-img"/>
-                                    <div className="comics__item-name">{name}</div>
-                                    <div className="comics__item-price">{price}</div>
-                                </a>
-                            </li>
+                            <CSSTransition nodeRef={refArr[index]} classNames="roll-in" timeout={500} key={index}>
+                                <li className="comics__item"
+                                key={index}
+                                ref={refArr[index]} >
+                                    <a href={"/comics/" + id}>
+                                        <img src={thumbnail} alt={name} className="comics__item-img"/>
+                                        <div className="comics__item-name">{name}</div>
+                                        <div className="comics__item-price">{price}</div>
+                                    </a>
+                                </li>
+                            </CSSTransition>
                         )
                     })
                 }
-            </ul>
+            </TransitionGroup>
             <button 
             className="button button__main button__long"
             onClick={() => onRequest(offset)}

@@ -1,13 +1,12 @@
-import './single-comic-page.scss';
+import './single-comic.scss';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Spinner from '../../spinner/Spinner';
-import Error from '../../error/Error';
-import Banner from '../../banner/Banner';
-import useMarvelService from '../../../services/MarvelService';
+import Spinner from '../spinner/Spinner';
+import Error from '../error/Error';
+import useMarvelService from '../../services/MarvelService';
 
 
-const SingleComicPage = () => {
+const SingleComic = () => {
 
     const {comicId} = useParams();
     const [comic, setComic] = useState(null);
@@ -31,12 +30,10 @@ const SingleComicPage = () => {
 
     return (
         <>
-            <Banner/>
             {error&&<Error/>}
             {loading&&<Spinner/>}
             {(comic) ? <View comic={comic}/> : null}
         </>
-
     )
 }
 
@@ -56,4 +53,4 @@ const View = ({comic}) => {
         </div>
     )
 }
-export default SingleComicPage;
+export default SingleComic;
