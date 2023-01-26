@@ -1,32 +1,23 @@
 import ErrorBoundary from '../error-boundary/ErrorBoundary';
 import Banner from '../banner/Banner';
-import { Outlet } from 'react-router-dom';
-// import { SwitchTransition, CSSTransition, TransitionGroup } from 'react-transition-group';
+import { Helmet } from 'react-helmet';
+import ComicsList from '../comics-list/ComicsList';
 
 const ComicsPage = () => {
-    // const location = useLocation(),
-    //       currentOutlet = useOutlet(),
-    //       refOutlet = createRef();
 
     return(
         <>
+            <Helmet>
+                <meta
+                    name="description"
+                    content="Comics list - Marvel information portal"
+                />
+                <title>Comics list - Marvel information portal</title>
+            </Helmet>
             <Banner/>
             <ErrorBoundary>
-                <Outlet/>
+                <ComicsList/>
             </ErrorBoundary>
-            {/* <SwitchTransition>
-                <CSSTransition
-                classNames="page"
-                timeout={500}
-                key={location.pathname}
-                unmountOnExit
-                nodeRef={refOutlet}
-                >
-                    <div ref={refOutlet} >
-                        {currentOutlet}
-                    </div>
-                </CSSTransition>                
-            </SwitchTransition> */}
         </>
     )
 };

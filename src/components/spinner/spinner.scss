@@ -1,3 +1,4 @@
+@import '../../variables.scss';
 
 @keyframes spinner {
   0% { transform: translate(-50%,-50%) rotate(0deg); }
@@ -5,9 +6,9 @@
 }
 .spinner div {
   position: absolute;
-  width: 62px;
-  height: 62px;
-  border: 22px solid #9f0013;
+  width: 50px;
+  height: 50px;
+  border: 10px solid $main-color;
   border-top-color: transparent;
   border-radius: 50%;
   animation: spinner 0.970873786407767s linear infinite;

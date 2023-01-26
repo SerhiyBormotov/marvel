@@ -41,7 +41,8 @@ const CharacterList = (props) => {
         if (didMount.current) {return} //to protect from executing twice
         didMount.current = true;
         onRequest();
-    }, []);    
+    }, []);   
+    
     
     let loadingMessage = (loading && (charList.length === 0)) ? <Spinner/> : null,   //Check if Char List is empty
         errorMessage = error ? <Error/> : null;

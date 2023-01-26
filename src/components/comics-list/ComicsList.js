@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, createRef } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { Link } from 'react-router-dom';
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
@@ -47,11 +48,11 @@ const ComicsList = () => {
                                 <li className="comics__item"
                                 key={index}
                                 ref={refArr[index]} >
-                                    <a href={"/comics/" + id}>
+                                    <Link to={'/comics/' + id}>
                                         <img src={thumbnail} alt={name} className="comics__item-img"/>
                                         <div className="comics__item-name">{name}</div>
                                         <div className="comics__item-price">{price}</div>
-                                    </a>
+                                    </Link>
                                 </li>
                             </CSSTransition>
                         )
