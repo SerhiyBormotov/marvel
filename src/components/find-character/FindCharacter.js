@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import useMarvelService from '../../services/MarvelService';
 import './find-character.scss';
+
 const FindCharacter = (name) => {
     const {loading, error, getCharacterByName, clearError} = useMarvelService();
     const [char, setChar] = useState({});
-
 
     const formValidate = (values) => {
         const errors = {};
@@ -27,7 +27,7 @@ const FindCharacter = (name) => {
         return (
             <>
             {error && <div className='find-character__error-message'>Something went wrong. Try again later</div>}
-            {char.id === null && <div className='find-character__error-message'>The character was not found. Check the name and try again. </div>}
+            {char.id === null && !error && <div className='find-character__error-message'>The character was not found. Check the name and try again. </div>}
             {char.id && 
             <>
                 <div className='find-character__error-message find-character__success'>There is! Visit {char.name} page? </div>
@@ -36,7 +36,7 @@ const FindCharacter = (name) => {
                     to={`/${char.id}`}
                     >
                         <div className="inner">To Page</div>
-                    </Link>
+                </Link>
             </>
             }
             </>
@@ -68,9 +68,7 @@ const FindCharacter = (name) => {
                     <ErrorMessage name="name" component="div" className="find-character__error-message"/>
                     {resultLayout()}
                 </Form>
-            </Formik>
-            
-            
+            </Formik>            
         </div>
     )
 }

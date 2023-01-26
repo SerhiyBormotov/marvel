@@ -6,8 +6,6 @@ import useMarvelService from '../../services/MarvelService';
 import './character-list.scss';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-
-
 const CharacterList = (props) => {
 
     const [charList, setCharList] = useState([]),
@@ -41,17 +39,12 @@ const CharacterList = (props) => {
         if (didMount.current) {return} //to protect from executing twice
         didMount.current = true;
         onRequest();
-    }, []);   
-    
-    
-    let loadingMessage = (loading && (charList.length === 0)) ? <Spinner/> : null,   //Check if Char List is empty
-        errorMessage = error ? <Error/> : null;
-
+    }, []);
+ 
     return (
-        <div className="char__list">
-            
-            {loadingMessage}
-            {errorMessage}
+        <div className="char__list">            
+            {loading && (charList.length === 0) && <Spinner/>}
+            {error && <Error/>}
             <TransitionGroup className="char__grid" component={'ul'}>
                 { charList.map((char, i) => {
                     refArr[i]=createRef();

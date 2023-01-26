@@ -8,7 +8,6 @@ import SingleCharLayout from './SingleCharLayout';
 import SingleComicLayout from './SingleComicLayout';
 import useMarvelService from '../../../services/MarvelService';
 
-
 const SinglePage = ({target}) => {
 
     const {id} = useParams();
@@ -38,13 +37,11 @@ const SinglePage = ({target}) => {
         if (didMount.current) {return} //to protect from executing twice
         didMount.current = true;
         dataUpdate();
-    }, []);
-    
+    }, []);    
 
     return (
         <>  
             <Banner/>
-
             {error && <Error/>}
             {loading && <Spinner/>}
             {data && target === "char" && <SingleCharLayout data = {data}/>}
